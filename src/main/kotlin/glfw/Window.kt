@@ -3,6 +3,7 @@ package glfw
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 
 class Window(
@@ -22,6 +23,30 @@ class Window(
         if (enableVSync) glfwSwapInterval(1)
 
         glfwShowWindow(it)
+    }
+
+    init {
+        // set viewport
+        glfwSetFramebufferSizeCallback(window) { window, width, height ->
+            glViewport(0, 0, width, height)
+        }
+
+        // center window
+        // it is should be optional?
+        stackPush().use { stack ->
+            val pWidth = stack.mallocInt(1) // int*
+            val pHeight = stack.mallocInt(1) // int*
+
+            glfwGetWindowSize(window, pWidth, pHeight)
+
+            val vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor())!!
+
+            glfwSetWindowPos(
+                window,
+                (vidmode.width() - pWidth[0]) / 2,
+                (vidmode.height() - pHeight[0]) / 2
+            )
+        }
     }
 
     fun update() {

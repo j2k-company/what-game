@@ -10,7 +10,7 @@ var window by Delegates.notNull<Window>()
 fun main(args: Array<String>) {
     println("Version of lwjgl is " + Version.getVersion())
 
-    glfw.init()
+    glfw.init(glfw.Version(3, 3))
     window = Window(640, 480, "My abstract window!")
     loop()
 
