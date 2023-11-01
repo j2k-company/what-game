@@ -27,7 +27,7 @@ class Window(
 
     init {
         // set viewport
-        glfwSetFramebufferSizeCallback(window) { window, width, height ->
+        glfwSetFramebufferSizeCallback(window) { _, width, height ->
             glViewport(0, 0, width, height)
         }
 
