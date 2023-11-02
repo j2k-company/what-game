@@ -50,9 +50,12 @@ class Window(
     }
 
     fun update() {
-        glClear(GL_COLOR_BUFFER_BIT)// or GL_DEPTH_BUFFER_BIT) // TODO: maybe i should move it to another function
         glfwSwapBuffers(window)
         glfwPollEvents()
+    }
+
+    fun clear() {
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
     }
 
     fun destroy() {

@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
 
     GL.createCapabilities()
 //    glClearColor(210f / 255f, 105f / 255f, 30f / 255f, 0.0f)
-    glClearColor(0f, 0f, 0f, 0.0f)
+    glClearColor(0f, 0f, 0f, 0.0f) // TODO: move this in Window class
 //    glClearColor(1f, 1f, 1f, 0.0f)
 
     shader = shaderBuilder {
@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
     pushVerticesToBuffer(vertices)
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.SIZE_BYTES, 0)
     glBindBuffer(GL_ARRAY_BUFFER, 0)
-    glEnableVertexAttribArray(0)
+    glEnableVertexAttribArray(0) // BUG: maybe Enable and Disable should be in the render loop
     glBindVertexArray(0)
 
     loop()
@@ -62,6 +62,8 @@ private fun pushVerticesToBuffer(vertices: FloatArray) {
 
 private fun loop() {
     while (!window.isShouldClose) {
+        window.clear()
+
         shader.attach()
 
         glBindVertexArray(vao)
