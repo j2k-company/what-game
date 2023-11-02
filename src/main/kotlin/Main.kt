@@ -2,7 +2,10 @@ import glfw.Window
 import org.lwjgl.Version
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.glClearColor
+import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
+import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
+import shader.ShaderProgram
 import shader.shaderBuilder
 import kotlin.properties.Delegates
 
@@ -14,6 +17,9 @@ private val vertices = floatArrayOf(
     0.0f,  0.5f, 0.0f
 )
 
+private var shader by Delegates.notNull<ShaderProgram>()
+private var vao by Delegates.notNull<Int>() // TODO: this property should have own wrapper(dataclass or regular class)
+
 fun main(args: Array<String>) {
     println("Version of lwjgl is " + Version.getVersion())
 
@@ -21,16 +27,23 @@ fun main(args: Array<String>) {
     window = Window(640, 480, "My abstract window!")
 
     GL.createCapabilities()
-    glClearColor(210f / 255f, 105f / 255f, 30f / 255f, 0.0f)
+//    glClearColor(210f / 255f, 105f / 255f, 30f / 255f, 0.0f)
+    glClearColor(0f, 0f, 0f, 0.0f)
+//    glClearColor(1f, 1f, 1f, 0.0f)
 
-    pushVerticesToBuffer(vertices)
-
-    val shader = shaderBuilder {
+    shader = shaderBuilder {
         addShader("shaders/vertex.vert", GL_VERTEX_SHADER)
         addShader("shaders/fragment.frag", GL_FRAGMENT_SHADER)
     }
 
-    shader.attach()
+    vao = glGenVertexArrays()
+    glBindVertexArray(vao)
+
+    pushVerticesToBuffer(vertices)
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.SIZE_BYTES, 0)
+    glBindBuffer(GL_ARRAY_BUFFER, 0)
+    glEnableVertexAttribArray(0)
+    glBindVertexArray(0)
 
     loop()
 
@@ -49,6 +62,13 @@ private fun pushVerticesToBuffer(vertices: FloatArray) {
 
 private fun loop() {
     while (!window.isShouldClose) {
+        shader.attach()
+
+        glBindVertexArray(vao)
+        glDrawArrays(GL_TRIANGLES, 0, 3)
+
+        glBindVertexArray(0)
+
         window.update()
     }
 }
