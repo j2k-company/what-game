@@ -47,6 +47,15 @@ class Window(
                 (vidmode.height() - pHeight[0]) / 2
             )
         }
+
+        // TODO: This is should placed in the input manager?
+        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        glfwSetKeyCallback(window) { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) glfwSetWindowShouldClose(
+                window,
+                true
+            )
+        }
     }
 
     fun update() {
