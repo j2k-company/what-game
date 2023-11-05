@@ -1,11 +1,13 @@
 import glfw.Window
 import org.lwjgl.Version
+import org.lwjgl.glfw.GLFW.glfwGetTime
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.glClearColor
 import org.lwjgl.opengl.GL30.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL30.GL_VERTEX_SHADER
 import shader.ShaderProgram
 import shader.shaderBuilder
+import kotlin.math.sin
 import kotlin.properties.Delegates
 
 
@@ -21,8 +23,18 @@ private val indices = intArrayOf(
     1, 2, 3    // second triangle
 )
 
+//private val vertices = floatArrayOf(
+//    // positions        // colors
+//    0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+//    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+//    0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
+//)
+//private val indices = intArrayOf(
+//    0, 1, 2,   // first triangle
+//)
+
 private var shader by Delegates.notNull<ShaderProgram>()
-private var square by Delegates.notNull<Model>()
+private var shape by Delegates.notNull<Model>()
 
 fun main(args: Array<String>) {
     println("Version of lwjgl is " + Version.getVersion())
@@ -40,12 +52,12 @@ fun main(args: Array<String>) {
         addShader("shaders/fragment.frag", GL_FRAGMENT_SHADER)
     }
 
-    square = Model(vertices, indices)
+    shape = Model(vertices, indices)
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     loop()
 
-    square.delete()
+    shape.delete()
     shader.delete()
     window.destroy()
     glfw.terminate()
@@ -54,22 +66,14 @@ fun main(args: Array<String>) {
 private fun loop() {
     while (!window.isShouldClose) {
         window.clear()
-
         shader.attach()
-        square.draw()
+
+        val time = glfwGetTime()
+        val red = (sin(time).toFloat() / 2.0f) + 0.5f
+        // TODO: should i get the uniform location at every time?
+        shader.setUniform("ourColor", red)
+        shape.draw()
 
         window.update()
     }
 }
-
-//
-//    // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-//    glfwSetKeyCallback(
-//        window,
-//        GLFWKeyCallbackI { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
-//            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) glfwSetWindowShouldClose(
-//                window,
-//                true
-//            ) // We will detect this in the rendering loop
-//        }
-//    )

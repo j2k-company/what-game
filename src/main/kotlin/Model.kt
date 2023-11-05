@@ -25,6 +25,13 @@ class Model(vertices: FloatArray, indices: IntArray) {
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.SIZE_BYTES, 0)
         glEnableVertexAttribArray(0)
 
+//        // position attribute
+//        glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * Float.SIZE_BYTES, 0)
+//        glEnableVertexAttribArray(0)
+//        // color attribute
+//        glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * Float.SIZE_BYTES, (3 * Float.SIZE_BYTES).toLong())
+//        glEnableVertexAttribArray(1)
+
         // And finally unbind all
         glBindVertexArray(0)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
